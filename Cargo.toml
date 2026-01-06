@@ -1,0 +1,33 @@
+[package]
+name = "my_cms"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+tokio = { version = "1", features = ["full"] }
+axum = "0.7"
+tera = "1.19"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+hyper = { version = "1", features = ["full"] }
+# server-auto 機能を持つ hyper-util
+hyper-util = { version = "0.1", features = ["tokio", "server-auto", "service"] }
+# oneshot メソッドを持つ tower を追加
+tower = { version = "0.4", features = ["util"] }
+
+# Database
+# runtime-tokio: 非同期ランタイムの指定
+# mysql: MySQLドライバの有効化
+sqlx = { version = "0.7", features = ["runtime-tokio", "mysql", "chrono"] }
+chrono = { version = "0.4", features = ["serde"] }
+# .envファイルを読み込むライブラリ
+dotenvy = "0.15"
+
+# ロギングのコアライブラリ
+tracing = "0.1"
+# ログの出力先やフォーマットを管理
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+# ファイルへの書き込みとローテーション (日次/時間次)
+tracing-appender = "0.2"
+# Axumのミドルウェア (アクセスログ用)
+tower-http = { version = "0.5", features = ["trace"] }

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <title>{% block title %}至高のCMS{% endblock %}</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+
+  {% block head %}{% endblock %}
+</head>
+
+<body class="bg-slate-100 min-h-screen p-10 font-sans">
+
+  <nav class="max-w-4xl mx-auto mb-6 flex justify-between items-center">
+    <div class="font-bold text-slate-700">My CMS System</div>
+    <div class="space-x-4 text-sm font-bold">
+      <a href="/" class="text-blue-600 hover:text-blue-800">Dashboard</a>
+      <a href="/users" class="text-blue-600 hover:text-blue-800">Users</a>
+    </div>
+  </nav>
+
+  <div class="max-w-4xl mx-auto bg-white p-8 rounded-2xl shadow-xl">
+    {% block content %}{% endblock %}
+  </div>
+
+  <footer class="text-center text-slate-400 text-xs mt-10">
+    &copy; 2026 Katayama Engineering.
+  </footer>
+
+</body>
+
+</html>
