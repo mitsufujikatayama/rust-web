@@ -112,7 +112,7 @@ chmod +x tailwindcss
 JSをバンドルし、Rustサーバーを起動します。
 ```bash
 # JSビルド (Minify有効)
-./esbuild src_js/main.js --bundle --minify --outfile=public/js/app.js
+./esbuild src_js/app.js --bundle --minify --outfile=public/js/app.js
 # CSS自動生成
 ./tailwindcss -i input.css -o public/css/style.css --watch
 
@@ -149,6 +149,21 @@ src/main.rs でルーティングを追加。
 3. API追加:
 ハンドラ src/routes/api/new_entity.rs を作成 (JSONを返す)。
 src/routes/api/mod.rs で .nest() する。
+
+## 🚀 モードによる挙動の違い
+本プロジェクトは `cargo run` のフラグによって起動モードが切り替わります。
+
+### 開発モード (Development)
+- コマンド: `cargo run`
+- 通信: **TCP (http://0.0.0.0:3000)**
+- 用途: ブラウザでの動作確認
+- 機能: `/static` へのアクセスで `public` フォルダを配信します。
+
+### 本番モード (Production)
+- コマンド: `cargo run --release`
+- 通信: **Unix Domain Socket (/tmp/my_cms.sock)**
+- 用途: Nginx 等のリバースプロキシと組み合わせた運用
+- 補足: `.env` ファイルが存在しなくても環境変数さえ設定されていれば起動します。
 
 ## 📜 License
 MIT
