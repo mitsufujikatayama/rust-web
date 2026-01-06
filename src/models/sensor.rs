@@ -1,7 +1,6 @@
-use sqlx::mysql::MySqlPool;
 use serde::{Deserialize, Serialize};
+use sqlx::mysql::MySqlPool;
 
-// 構造体定義
 #[derive(sqlx::FromRow, Serialize)]
 pub struct SensorData {
     pub id: i32,
@@ -16,7 +15,6 @@ pub struct CreateSensorInput {
     pub heart_rate: i32,
 }
 
-// ロジック実装
 pub async fn fetch_recent(pool: &MySqlPool) -> Result<Vec<SensorData>, sqlx::Error> {
     sqlx::query_as!(
         SensorData,

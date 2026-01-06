@@ -1,5 +1,5 @@
-use sqlx::mysql::MySqlPool;
 use serde::{Deserialize, Serialize};
+use sqlx::mysql::MySqlPool;
 
 #[derive(sqlx::FromRow, Serialize)]
 pub struct User {

@@ -30,4 +30,4 @@ tracing-subscriber = { version = "0.3", features = ["env-filter"] }
 # ファイルへの書き込みとローテーション (日次/時間次)
 tracing-appender = "0.2"
 # Axumのミドルウェア (アクセスログ用)
-tower-http = { version = "0.5", features = ["trace"] }
+tower-http = { version = "0.5", features = ["trace", "fs"] }
