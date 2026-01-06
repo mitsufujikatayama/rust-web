@@ -47,25 +47,46 @@ Rust: 最新の安定版 (rustup update)
 MySQL: v8.0以上
 Tools: curl (フロントエンドツールのダウンロードに使用)
 
+## 🗄️ Database Migrations (SQLx)
+DBスキーマの変更は、SQLを手動実行するのではなく、マイグレーションファイルで管理します。
+
+1. ツールのインストール
+`sqlx` CLIツールをインストールします（初回のみ）。
+```bash
+# MySQL機能を有効にしてインストール
+cargo install sqlx-cli --no-default-features --features native-tls,mysql
+```
+
+2. マイグレーションファイルの作成
+スキーマ変更を行う際は、新しいファイルを作成します。
+```bash
+# migrations/YYYYMMDDHHMMSS_description.sql が生成されます
+# -r オプションで revert（ロールバック用）ファイルも同時生成
+sqlx migrate add -r create_users_table
+```
+生成されたSQLファイルにDDLを記述します。
+### migrations/xxxx_up.sql: テーブル作成などの変更内容 (CREATE/ALTER)
+### migrations/xxxx_down.sql: 取り消し内容 (DROP/REVERT)
+
+3. マイグレーションの適用
+作成したSQLをデータベースに反映させます。
+```bash
+# 未適用のマイグレーションをすべて実行
+sqlx migrate run
+```
+
+4. 変更の取り消し (Rollback)
+直前の変更を取り消したい場合に使用します。
+```bash
+sqlx migrate revert
+```
+
 ## ⚙️ セットアップ & 起動
 1. データベースの準備
-MySQLにデータベースを作成し、テーブルを初期化します。
-```sql
-CREATE DATABASE my_cms_db;
-USE my_cms_db;
-CREATE TABLE users (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    username VARCHAR(100) NOT NULL,
-    email VARCHAR(255) NOT NULL,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE sensor_data (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    temperature DOUBLE NOT NULL,
-    heart_rate INT NOT NULL,
-    recorded_at DATETIME DEFAULT CURRENT_TIMESTAMP
-);
+```bash
+sqlx migrate run
+# DB初期化する場合は
+sqlx migrate reset
 ```
 
 2. 環境変数 (.env)
@@ -82,7 +103,7 @@ npmを使わず、単一バイナリをダウンロードして配置します (
 curl -sL [https://registry.npmjs.org/@esbuild/linux-x64/-/linux-x64-0.19.11.tgz](https://registry.npmjs.org/@esbuild/linux-x64/-/linux-x64-0.19.11.tgz) | tar -xz package/bin/esbuild
 mv package/bin/esbuild . && rm -rf package
 
-# (任意) Tailwind CSS の取得
+# Tailwind CSS の取得
 curl -sL -o tailwindcss [https://github.com/tailwindlabs/tailwindcss/releases/latest/download/tailwindcss-linux-x64](https://github.com/tailwindlabs/tailwindcss/releases/latest/download/tailwindcss-linux-x64)
 chmod +x tailwindcss
 ```
@@ -92,6 +113,8 @@ JSをバンドルし、Rustサーバーを起動します。
 ```bash
 # JSビルド (Minify有効)
 ./esbuild src_js/main.js --bundle --minify --outfile=public/js/app.js
+# CSS自動生成
+./tailwindcss -i input.css -o public/css/style.css --watch
 
 # サーバー起動 (ホットリロード開発時は cargo watch -x run が便利)
 cargo run
@@ -126,40 +149,6 @@ src/main.rs でルーティングを追加。
 3. API追加:
 ハンドラ src/routes/api/new_entity.rs を作成 (JSONを返す)。
 src/routes/api/mod.rs で .nest() する。
-
-## 🗄️ Database Migrations (SQLx)
-DBスキーマの変更は、SQLを手動実行するのではなく、マイグレーションファイルで管理します。
-
-### 1. ツールのインストール
-`sqlx` CLIツールをインストールします（初回のみ）。
-```bash
-# MySQL機能を有効にしてインストール
-cargo install sqlx-cli --no-default-features --features native-tls,mysql
-```
-
-### 2. マイグレーションファイルの作成
-スキーマ変更を行う際は、新しいファイルを作成します。
-```bash
-# migrations/YYYYMMDDHHMMSS_description.sql が生成されます
-# -r オプションで revert（ロールバック用）ファイルも同時生成
-sqlx migrate add -r create_users_table
-```
-生成されたSQLファイルにDDLを記述します。
-#### migrations/xxxx_up.sql: テーブル作成などの変更内容 (CREATE/ALTER)
-#### migrations/xxxx_down.sql: 取り消し内容 (DROP/REVERT)
-
-### 3. マイグレーションの適用
-作成したSQLをデータベースに反映させます。
-```bash
-# 未適用のマイグレーションをすべて実行
-sqlx migrate run
-```
-
-### 4. 変更の取り消し (Rollback)
-直前の変更を取り消したい場合に使用します。
-```bash
-sqlx migrate revert
-```
 
 ## 📜 License
 MIT
