@@ -163,7 +163,6 @@ src/routes/api/mod.rs で .nest() する。
 - コマンド: `cargo run --release`
 - 通信: **Unix Domain Socket (/tmp/my_cms.sock)**
 - 用途: Nginx 等のリバースプロキシと組み合わせた運用
-- 補足: `.env` ファイルが存在しなくても環境変数さえ設定されていれば起動します。
 
 ## 📜 License
 MIT
